@@ -104,6 +104,7 @@ export default {
 
     if (!geminiRes.ok) {
       const errText = await geminiRes.text()
+      console.error('Gemini API error', geminiRes.status, errText)
       return json({ error: `Gemini APIエラー: ${geminiRes.status} ${errText}` }, 502)
     }
 
@@ -113,6 +114,7 @@ export default {
     const inline = imagePart?.inlineData || imagePart?.inline_data
 
     if (!inline?.data) {
+      console.error('Gemini returned no image', JSON.stringify(geminiJson).slice(0, 2000))
       return json({ error: 'Geminiが画像を生成しませんでした(安全フィルタ等で拒否された可能性があります)' }, 502)
     }
 

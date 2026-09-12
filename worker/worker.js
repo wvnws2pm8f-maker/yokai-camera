@@ -100,8 +100,10 @@ export default {
 
     let aiResult
     try {
+      // contentTypeを手動指定すると、FormDataが自動生成するboundary(区切り文字)が
+      // 消えてしまい "Missing boundary in multipart" エラーになるため指定しない
       aiResult = await env.AI.run(IMAGE_MODEL, {
-        multipart: { body: form, contentType: 'multipart/form-data' }
+        multipart: { body: form }
       })
     } catch (err) {
       console.error('Workers AI error', err && err.message ? err.message : String(err))

@@ -5,6 +5,7 @@
 // 未設定の場合は、Workerが用意できるまでの「仮あわせ」として、
 // canvasで写真の上に妖怪の絵文字を大きく重ねるだけのモック合成を行う。
 const WORKER_URL = import.meta.env.VITE_WORKER_URL
+const APP_SECRET = import.meta.env.VITE_APP_SECRET
 
 export async function compositeYokaiOntoPhoto(photoDataUrl, yokai) {
   if (WORKER_URL) {
@@ -20,7 +21,10 @@ export async function compositeYokaiOntoPhoto(photoDataUrl, yokai) {
 async function compositeViaWorker(photoDataUrl, yokai) {
   const res = await fetch(WORKER_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(APP_SECRET ? { 'X-App-Secret': APP_SECRET } : {})
+    },
     body: JSON.stringify({
       photoDataUrl,
       yokaiName: yokai.name,

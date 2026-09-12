@@ -30,6 +30,8 @@ jobs:
           # WORKER_URL という名前で登録すると、ここでビルドに埋め込まれる。
           # 未設定でもビルドは通り、その場合は「仮あわせ」モックで動作する。
           VITE_WORKER_URL: ${{ secrets.WORKER_URL }}
+          # Worker側の合言葉(APP_SECRET)と同じ値。第三者による無断利用を防ぐ簡易ガード。
+          VITE_APP_SECRET: ${{ secrets.APP_SECRET }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -98,12 +98,17 @@ export default {
     form.append('prompt', prompt)
     form.append('steps', '25')
 
+    // FormDataをmultipartとして送るには、boundary(区切り文字)を含む正しい
+    // Content-Typeが必要。この文字列は自分では組み立てられないので、
+    // 一度Requestオブジェクトを作らせて、そこで自動生成されたヘッダーと
+    // ボディ(ReadableStream)のペアをそのまま使う。
+    const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
+    const multipartContentType = encodedRequest.headers.get('content-type')
+
     let aiResult
     try {
-      // contentTypeを手動指定すると、FormDataが自動生成するboundary(区切り文字)が
-      // 消えてしまい "Missing boundary in multipart" エラーになるため指定しない
       aiResult = await env.AI.run(IMAGE_MODEL, {
-        multipart: { body: form }
+        multipart: { body: encodedRequest.body, contentType: multipartContentType }
       })
     } catch (err) {
       console.error('Workers AI error', err && err.message ? err.message : String(err))

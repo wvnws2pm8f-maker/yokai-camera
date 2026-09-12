@@ -37,10 +37,16 @@ npm run build
 npm run preview
 ```
 
-## AI合成(Cloudflare Workers)を有効にするための設定
+## AI合成(Cloudflare Workers + Workers AI)を有効にするための設定
 
 Worker本体のコードは `worker/worker.js` に用意してあります。**wranglerコマンドやCLIは不要**、
 Cloudflareのダッシュボード(ブラウザ)だけで設定できます。
+
+画像編集AIは **Cloudflare Workers AI**(`@cf/black-forest-labs/flux-2-dev`)を使用。
+1日10,000ニューロンまで無料・クレジットカード登録不要・上限に達しても課金されず
+単に使えなくなるだけ、という安心設計です。
+(当初はGoogle Gemini APIを使う設計でしたが、無料枠が0で課金必須だったため
+Cloudflare自身のAIに切り替えました)
 
 ### 1. Cloudflareアカウントを作る
 
@@ -54,17 +60,19 @@ https://dash.cloudflare.com/sign-up で無料アカウントを作成(クレジ�
 3. デプロイ後、`Edit code`(Quick Edit)を開く
 4. エディタの中身を全部消して、このリポジトリの `worker/worker.js` の中身を
    丸ごとコピー＆ペースト
-5. `Save and deploy`(または `Deploy`)を押す
+5. `Deploy` を押す
 6. 画面上部に表示される Worker の URL(例: `https://yokai-camera-worker.<自分のsubdomain>.workers.dev`)を控えておく
 
-### 3. 環境変数(APIキー・合言葉)を設定する
+### 3. Workers AIのバインディングと合言葉を設定する
 
-1. GeminiのAPIキーがまだ無ければ https://aistudio.google.com/ で無料発行(御蔵島図鑑のときと同じ手順)
-2. Worker画面の `Settings` → `Variables and Secrets` を開く
-3. `Add` で以下の2つを追加(どちらも「Secret」推奨):
-   - `GEMINI_API_KEY`: 発行したGeminiのAPIキー
-   - `APP_SECRET`: 好きな合言葉(何でもよい。第三者がこのURLを直接叩けないようにするためのガード)
-4. 保存(Deploy)する
+1. Worker画面の `Bindings` タブを開く
+2. `Add binding` → `Workers AI` を選ぶ
+3. 変数名(Variable name)を **`AI`** にして保存(この名前はコード側と合わせる必要があるので必ず`AI`にする)
+4. `Settings` → `Variables and Secrets` を開き、`Add` で以下を追加(「Secret」推奨):
+   - `APP_SECRET`: 好きな合言葉(何でもよい。第三者がこのURLを直接叩いて無料枠を消費できないようにするためのガード)
+5. 保存(Deploy)する
+
+(以前 `GEMINI_API_KEY` を設定した場合は、もう使わないので削除してOKです)
 
 ### 4. GitHub側にWorkerのURLと合言葉を登録する
 

@@ -1,31 +1,31 @@
-// 妖怪カメラ AI合成用 Cloudflare Worker
+// 妖怪カメラ AI合成用 Cloudflare Worker (Workers AI版)
 //
 // フロントエンド(GitHub Pages上の静的サイト)から、撮影した写真と選ばれた妖怪の
-// 情報(名前・見た目の特徴)を受け取り、GeminiのAPIキーはここ(サーバー側)だけで
-// 保持したまま、Gemini 3.1 Flash Image(画像編集モデル)を呼び出して妖怪を写真に
-// 自然に合成し、結果画像をフロントに返す。
+// 情報(名前・見た目の特徴)を受け取り、Cloudflare Workers AI の画像編集モデル
+// (FLUX.2 [dev])を使って妖怪を写真に合成し、結果画像をフロントに返す。
 //
-// 使い方: Cloudflareダッシュボードの Workers & Pages で新規Workerを作成し、
-// このファイルの中身を丸ごと貼り付けてデプロイする(Quick Edit)。
-// wranglerコマンドやCLIは不要。
+// 【2026-09-12 方針変更の経緯】
+// 当初はGoogle GeminiのAPI(gemini-3.1-flash-image-preview)を使う設計だったが、
+// 実際に呼び出したところ「無料枠の上限が0」(課金設定が無いと1回も使えない)
+// ことが判明し断念した。代わりにCloudflare自身のWorkers AI
+// (1日10,000ニューロンまで無料・カード登録不要・上限に達しても課金されず
+// 単に使えなくなるだけ)にある画像編集モデル @cf/black-forest-labs/flux-2-dev
+// に切り替えた。これによりGEMINI_API_KEYは不要になった。
 //
-// 必要な環境変数(Cloudflareダッシュボードの Settings > Variables and Secrets で設定):
-//   GEMINI_API_KEY : Google AI Studio(https://aistudio.google.com/)で発行した
-//                    Geminiの無料APIキー
-//   APP_SECRET     : 家族専用アプリなので、第三者がこのURLを直接叩いてAPI枠を
-//                    消費できないようにするための合言葉(何でもよい)。
-//                    フロント側の環境変数 VITE_APP_SECRET と同じ値にすること
+// 必要な設定:
+//   1. このWorkerに「Workers AI」のバインディングを追加し、変数名を
+//      `AI` にする
+//      (Cloudflareダッシュボード > このWorker > Bindings タブ > Add binding)
+//   2. 環境変数(Settings > Variables and Secrets)に APP_SECRET を設定
+//      (家族専用アプリを守る合言葉。フロント側の環境変数 VITE_APP_SECRET と
+//      同じ値にすること。無料枠を他人に消費されないためのガード)
 //
-// 【モデル名についての注意】(2026-09時点での調査結果)
-// 画像編集モデルは gemini-2.5-flash-image(通称Nano Banana)が2026年10月2日で
-// 提供終了予定のため、後継の gemini-3.1-flash-image-preview(通称Nano Banana 2、
-// 2026年2月リリース)を使用する。過去にテキストモデルでも
-// gemini-2.0-flash → gemini-3.6-flash への移行で同様のハマりがあったので、
-// この合成が動かなくなったら、まずGoogleの公式ドキュメントで最新のモデル名を
-// 確認すること(https://ai.google.dev/gemini-api/docs/models)。
+// 【モデル名についての注意】
+// Cloudflare Workers AIのモデルカタログは今後も更新される可能性がある。
+// このモデルが使えなくなったら、まず以下でカタログを確認すること:
+// https://developers.cloudflare.com/workers-ai/models/ (image-to-imageカテゴリ)
 
-const GEMINI_MODEL = 'gemini-3.1-flash-image-preview'
-const GEMINI_URL_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
+const IMAGE_MODEL = '@cf/black-forest-labs/flux-2-dev'
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -42,7 +42,7 @@ export default {
       return json({ error: 'POSTのみ対応しています' }, 405)
     }
 
-    // 合言葉チェック(第三者による無断利用・API枠消費を防ぐ簡易ガード)
+    // 合言葉チェック(第三者による無断利用・無料枠消費を防ぐ簡易ガード)
     if (env.APP_SECRET) {
       const provided = request.headers.get('X-App-Secret')
       if (provided !== env.APP_SECRET) {
@@ -50,8 +50,11 @@ export default {
       }
     }
 
-    if (!env.GEMINI_API_KEY) {
-      return json({ error: 'GEMINI_API_KEYが設定されていません(Cloudflareダッシュボードで設定してください)' }, 500)
+    if (!env.AI) {
+      return json(
+        { error: 'Workers AIのバインディング(AI)が設定されていません。CloudflareダッシュボードのBindingsタブで追加してください' },
+        500
+      )
     }
 
     let body
@@ -72,56 +75,48 @@ export default {
     }
     const [, mimeType, base64Data] = match
 
-    const prompt =
-      `この写真に、次の妖怪を自然に写り込ませてください。\n` +
-      `妖怪の名前: ${yokaiName}\n` +
-      `見た目の特徴: ${appearance}\n` +
-      `写真の背景・光の当たり方・遠近感・被写体との距離感に合わせて、` +
-      `妖怪がその場に本当にいるかのように違和感なく合成してください。` +
-      `写真に写っている人物や風景など、妖怪以外の部分はできるだけ変えないでください。` +
-      `子ども向けアプリなので、怖すぎない・親しみやすい雰囲気で描いてください。`
-
-    let geminiRes
+    // base64 → バイナリ(Uint8Array)に変換して、multipart送信用のBlobを作る
+    let imageBlob
     try {
-      geminiRes = await fetch(
-        `${GEMINI_URL_BASE}/${GEMINI_MODEL}:generateContent?key=${env.GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }]
-              }
-            ],
-            generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-          })
-        }
-      )
+      const binary = atob(base64Data)
+      const bytes = new Uint8Array(binary.length)
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+      imageBlob = new Blob([bytes], { type: mimeType })
     } catch (err) {
-      return json({ error: `Gemini APIへの接続に失敗しました: ${err.message}` }, 502)
+      return json({ error: `写真データのデコードに失敗しました: ${err.message}` }, 400)
     }
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text()
-      console.error('Gemini API error', geminiRes.status, errText)
-      return json({ error: `Gemini APIエラー: ${geminiRes.status} ${errText}` }, 502)
+    const prompt =
+      `Add the following yokai (Japanese folklore creature) naturally into this photo, ` +
+      `matching the background, lighting, perspective and scale so it looks like it is really ` +
+      `standing/floating there. Keep everything else in the photo (people, background, objects) ` +
+      `unchanged. Yokai name: ${yokaiName}. Appearance: ${appearance}. ` +
+      `This is for a children's app, so keep the mood friendly and not too scary.`
+
+    const form = new FormData()
+    form.append('input_image_0', imageBlob, 'photo')
+    form.append('prompt', prompt)
+    form.append('steps', '25')
+
+    let aiResult
+    try {
+      aiResult = await env.AI.run(IMAGE_MODEL, {
+        multipart: { body: form, contentType: 'multipart/form-data' }
+      })
+    } catch (err) {
+      console.error('Workers AI error', err && err.message ? err.message : String(err))
+      return json({ error: `Workers AIの呼び出しに失敗しました: ${err && err.message ? err.message : err}` }, 502)
     }
 
-    const geminiJson = await geminiRes.json()
-    const parts = geminiJson?.candidates?.[0]?.content?.parts || []
-    const imagePart = parts.find((p) => p.inlineData || p.inline_data)
-    const inline = imagePart?.inlineData || imagePart?.inline_data
+    const outBase64 =
+      typeof aiResult === 'string' ? aiResult : aiResult?.image || aiResult?.result?.image
 
-    if (!inline?.data) {
-      console.error('Gemini returned no image', JSON.stringify(geminiJson).slice(0, 2000))
-      return json({ error: 'Geminiが画像を生成しませんでした(安全フィルタ等で拒否された可能性があります)' }, 502)
+    if (!outBase64) {
+      console.error('Workers AI returned no image', JSON.stringify(aiResult).slice(0, 2000))
+      return json({ error: 'AIが画像を生成しませんでした' }, 502)
     }
 
-    const outMime = inline.mimeType || inline.mime_type || 'image/png'
-    const imageDataUrl = `data:${outMime};base64,${inline.data}`
-
-    return json({ imageDataUrl })
+    return json({ imageDataUrl: `data:image/png;base64,${outBase64}` })
   }
 }
 

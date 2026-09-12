@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getCurrentPosition, reverseGeocodeToPrefecture } from './utils/reverseGeocode.js'
+import { normalizePhoto } from './utils/normalizePhoto.js'
 import { pickRandomYokai } from './utils/pickYokai.js'
 import { compositeYokaiOntoPhoto } from './utils/composite.js'
 import { saveCatch, getAllCatches } from './utils/db.js'
@@ -32,7 +33,7 @@ export default function App() {
     e.target.value = '' // 同じ写真でも次回また選べるようにする
     if (!file) return
 
-    const dataUrl = await readFileAsDataUrl(file)
+    const dataUrl = await normalizePhoto(file)
     setPhotoDataUrl(dataUrl)
     setSaved(false)
     await locateAndProceed(dataUrl)
@@ -54,7 +55,7 @@ export default function App() {
 
   async function huntYokai(dataUrl, prefCode, prefName, lat, lon) {
     setScreen('compositing')
-    setStatusText(`${prefName}の妖怪をさがしています…`)
+    setStatusText(`${prefName}の妖怪をさがしています…\n(20〜30秒くらいかかることがあるよ)`)
     const picked = pickRandomYokai(prefCode)
     if (!picked) {
       setErrorText('この都道府県の妖怪データがまだありません。')
@@ -122,7 +123,7 @@ export default function App() {
       {(screen === 'locating' || screen === 'compositing') && (
         <div className="loading">
           <div className="spinner" />
-          <p>{statusText}</p>
+          <p style={{ whiteSpace: 'pre-line' }}>{statusText}</p>
         </div>
       )}
 
@@ -150,13 +151,4 @@ export default function App() {
       {screen === 'zukan' && <ZukanList catches={catches} onGoHome={goHome} />}
     </div>
   )
-}
-
-function readFileAsDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = () => reject(reader.error)
-    reader.readAsDataURL(file)
-  })
 }

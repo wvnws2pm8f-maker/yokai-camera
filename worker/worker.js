@@ -96,7 +96,8 @@ export default {
     const form = new FormData()
     form.append('input_image_0', imageBlob, 'photo')
     form.append('prompt', prompt)
-    form.append('steps', '25')
+    // ステップ数を減らして応答時間を短くする(画質とのトレードオフ)
+    form.append('steps', '15')
 
     // FormDataをmultipartとして送るには、boundary(区切り文字)を含む正しい
     // Content-Typeが必要。この文字列は自分では組み立てられないので、

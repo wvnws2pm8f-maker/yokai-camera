@@ -14,9 +14,13 @@ export default function ZukanList({ catches, onGoHome }) {
           return (
             <div key={c.id} className={`zukan-item ${isOpen ? 'open' : ''}`} onClick={() => setOpenId(isOpen ? null : c.id)}>
               <div className="zukan-item-head">
-                <span className="emoji">{c.emoji}</span>
+                <img
+                  className="thumb"
+                  src={c.photos[c.photos.length - 1].imageDataUrl}
+                  alt={`${c.name}の写真`}
+                />
                 <div>
-                  <div className="name">{c.name}</div>
+                  <div className="name">{c.emoji} {c.name}</div>
                   <div className="meta">{c.prefecture} ・ {c.catchCount}回ゲット</div>
                 </div>
               </div>

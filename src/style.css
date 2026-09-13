@@ -198,12 +198,18 @@ button.link {
   gap: 12px;
 }
 
-.zukan-item .emoji {
-  font-size: 1.8rem;
+.zukan-item-head .thumb {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 
 .zukan-item .name {
   font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .zukan-item .meta {
@@ -219,14 +225,19 @@ button.link {
 
 .photo-strip {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   overflow-x: auto;
-  margin-top: 8px;
+  margin-top: 10px;
+  padding-bottom: 4px;
 }
 
 .photo-strip img {
-  height: 64px;
-  border-radius: 8px;
+  height: 260px;
+  width: auto;
+  max-width: 85vw;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
 }
 
 .pref-picker select {

@@ -21,7 +21,7 @@ export default function ZukanList({ catches, onGoHome }) {
                 />
                 <div>
                   <div className="name">{c.emoji} {c.name}</div>
-                  <div className="meta">{c.prefecture} ・ {c.catchCount}回ゲット</div>
+                  <div className="meta">{c.prefecture} ・ {c.type} ・ {c.catchCount}回ゲット</div>
                 </div>
               </div>
               {isOpen && (

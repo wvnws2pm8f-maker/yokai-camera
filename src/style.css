@@ -137,6 +137,8 @@ button.link {
 
 .badge.type-densho { background: #7d3fc7; }
 .badge.type-original { background: #2f8f8f; }
+.badge.type-geino { background: #b5651d; }
+.badge.type-gotouchi { background: #c2427a; }
 
 .result-info h2 {
   margin: 6px 0;

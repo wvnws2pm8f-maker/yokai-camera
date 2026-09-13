@@ -1,3 +1,5 @@
+import { typeClassName } from '../utils/yokaiType.js'
+
 export default function YokaiResultCard({ yokai, prefName, resultImageDataUrl, isMock, onSave, onRetry, onGoHome, saved }) {
   return (
     <div className="result-card">
@@ -9,7 +11,7 @@ export default function YokaiResultCard({ yokai, prefName, resultImageDataUrl, i
       )}
       <div className="result-info">
         <span className="badge">{prefName} で出現</span>
-        <span className={`badge type-${yokai.type === '伝承' ? 'densho' : 'original'}`}>{yokai.type}</span>
+        <span className={`badge type-${typeClassName(yokai.type)}`}>{yokai.type}</span>
         <h2>{yokai.emoji} {yokai.name}</h2>
         <p className="description">{yokai.description}</p>
         {yokai.voice && <p className="voice">「{yokai.voice}」</p>}

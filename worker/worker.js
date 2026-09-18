@@ -1,31 +1,28 @@
-// 妖怪カメラ AI合成用 Cloudflare Worker (Workers AI版)
+// 妖怪カメラ Cloudflare Worker (Workers AI版)
 //
-// フロントエンド(GitHub Pages上の静的サイト)から、撮影した写真と選ばれた妖怪の
-// 情報(名前・見た目の特徴)を受け取り、Cloudflare Workers AI の画像編集モデル
-// (FLUX.2 [dev])を使って妖怪を写真に合成し、結果画像をフロントに返す。
+// 2つの役割がある:
 //
-// 【2026-09-12 方針変更の経緯】
-// 当初はGoogle GeminiのAPI(gemini-3.1-flash-image-preview)を使う設計だったが、
-// 実際に呼び出したところ「無料枠の上限が0」(課金設定が無いと1回も使えない)
-// ことが判明し断念した。代わりにCloudflare自身のWorkers AI
-// (1日10,000ニューロンまで無料・カード登録不要・上限に達しても課金されず
-// 単に使えなくなるだけ)にある画像編集モデル @cf/black-forest-labs/flux-2-dev
-// に切り替えた。これによりGEMINI_API_KEYは不要になった。
+// 1. イラスト生成モード ( body.action === "illustrate" )
+//    妖怪1体につき1回だけ呼び出す管理用エンドポイント。軽量なテキスト→画像モデル
+//    (FLUX.1 schnell)で、その妖怪の立ち絵イラストを生成して返す。生成した画像は
+//    アプリのリポジトリに静的ファイルとして保存し(public/yokai-art/<id>.jpg)、
+//    以後は毎回このAPIを呼ばずに使い回す。
+//
+// 2. (旧)写真編集モード (デフォルト、photoDataUrl/yokaiName/appearanceを渡す)
+//    撮影した写真そのものにAIで妖怪を描き込む方式。FLUX.2 [dev]という重い
+//    画像編集モデルを毎回呼ぶ必要があり、Workers AI側の混雑で
+//    「Capacity temporarily exceeded」「Request timeout」が頻発したため、
+//    2026-09-19に本番のアプリからは呼ばなくなった(かわりに1のイラストを
+//    写真にクライアント側で重ねる方式に変更)。コードは万一の切り戻し用に残してある。
 //
 // 必要な設定:
-//   1. このWorkerに「Workers AI」のバインディングを追加し、変数名を
-//      `AI` にする
+//   1. このWorkerに「Workers AI」のバインディングを追加し、変数名を `AI` にする
 //      (Cloudflareダッシュボード > このWorker > Bindings タブ > Add binding)
 //   2. 環境変数(Settings > Variables and Secrets)に APP_SECRET を設定
-//      (家族専用アプリを守る合言葉。フロント側の環境変数 VITE_APP_SECRET と
-//      同じ値にすること。無料枠を他人に消費されないためのガード)
-//
-// 【モデル名についての注意】
-// Cloudflare Workers AIのモデルカタログは今後も更新される可能性がある。
-// このモデルが使えなくなったら、まず以下でカタログを確認すること:
-// https://developers.cloudflare.com/workers-ai/models/ (image-to-imageカテゴリ)
+//      (無料枠を他人に消費されないための合言葉。フロント側の VITE_APP_SECRET と同じ値)
 
-const IMAGE_MODEL = '@cf/black-forest-labs/flux-2-dev'
+const ILLUSTRATION_MODEL = '@cf/black-forest-labs/flux-1-schnell'
+const IMAGE_EDIT_MODEL = '@cf/black-forest-labs/flux-2-dev' // 旧・写真編集モード用
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -64,87 +61,110 @@ export default {
       return json({ error: 'リクエストの形式が正しくありません(JSONとして読めません)' }, 400)
     }
 
-    const { photoDataUrl, yokaiName, appearance } = body || {}
-    if (!photoDataUrl || !yokaiName || !appearance) {
-      return json({ error: 'photoDataUrl / yokaiName / appearance がすべて必要です' }, 400)
+    if (body && body.action === 'illustrate') {
+      return handleIllustrate(env, body)
     }
+    return handleLegacyPhotoEdit(env, body)
+  }
+}
 
-    const match = /^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/.exec(photoDataUrl)
-    if (!match) {
-      return json({ error: '写真データの形式が正しくありません(data URLではありません)' }, 400)
-    }
-    const [, mimeType, base64Data] = match
+// --- 1. イラスト生成モード ---
+async function handleIllustrate(env, body) {
+  const { prompt } = body || {}
+  if (!prompt) {
+    return json({ error: 'promptが必要です' }, 400)
+  }
 
-    // base64 → バイナリ(Uint8Array)に変換して、multipart送信用のBlobを作る
-    let imageBlob
+  const result = await runWithRetry(() => env.AI.run(ILLUSTRATION_MODEL, { prompt, steps: 6 }))
+  if (result.error) {
+    return json({ error: `イラスト生成に失敗しました: ${result.error}` }, 502)
+  }
+
+  const outBase64 =
+    typeof result.value === 'string' ? result.value : result.value?.image
+  if (!outBase64) {
+    console.error('Workers AI returned no image', JSON.stringify(result.value).slice(0, 2000))
+    return json({ error: 'イラストを生成できませんでした' }, 502)
+  }
+
+  return json({ imageDataUrl: `data:image/jpeg;base64,${outBase64}` })
+}
+
+// --- 2. (旧)写真編集モード ---
+async function handleLegacyPhotoEdit(env, body) {
+  const { photoDataUrl, yokaiName, appearance } = body || {}
+  if (!photoDataUrl || !yokaiName || !appearance) {
+    return json({ error: 'photoDataUrl / yokaiName / appearance がすべて必要です' }, 400)
+  }
+
+  const match = /^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/.exec(photoDataUrl)
+  if (!match) {
+    return json({ error: '写真データの形式が正しくありません(data URLではありません)' }, 400)
+  }
+  const [, mimeType, base64Data] = match
+
+  let imageBlob
+  try {
+    const binary = atob(base64Data)
+    const bytes = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+    imageBlob = new Blob([bytes], { type: mimeType })
+  } catch (err) {
+    return json({ error: `写真データのデコードに失敗しました: ${err.message}` }, 400)
+  }
+
+  const prompt =
+    `Add the following yokai (Japanese folklore creature) naturally into this photo, ` +
+    `matching the background, lighting, perspective and scale so it looks like it is really ` +
+    `standing/floating there. Keep everything else in the photo (people, background, objects) ` +
+    `unchanged. Yokai name: ${yokaiName}. Appearance: ${appearance}. ` +
+    `This is for a children's app, so keep the mood friendly and not too scary.`
+
+  const result = await runWithRetry(async () => {
+    const form = new FormData()
+    form.append('input_image_0', imageBlob, 'photo')
+    form.append('prompt', prompt)
+    form.append('steps', '15')
+    const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
+    const multipartContentType = encodedRequest.headers.get('content-type')
+    return env.AI.run(IMAGE_EDIT_MODEL, {
+      multipart: { body: encodedRequest.body, contentType: multipartContentType }
+    })
+  })
+
+  if (result.error) {
+    return json({ error: `Workers AIの呼び出しに失敗しました: ${result.error}` }, 502)
+  }
+
+  const outBase64 =
+    typeof result.value === 'string' ? result.value : result.value?.image || result.value?.result?.image
+  if (!outBase64) {
+    console.error('Workers AI returned no image', JSON.stringify(result.value).slice(0, 2000))
+    return json({ error: 'AIが画像を生成しませんでした' }, 502)
+  }
+
+  return json({ imageDataUrl: `data:image/png;base64,${outBase64}` })
+}
+
+// Workers AI側が「Capacity temporarily exceeded」「Request timeout」のような一時的な
+// エラーを返すことがあるため、最大2回まで試す共通ヘルパー。
+// 戻り値は { value } か { error } のどちらか。
+async function runWithRetry(fn, maxAttempts = 2) {
+  let lastErr
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      const binary = atob(base64Data)
-      const bytes = new Uint8Array(binary.length)
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-      imageBlob = new Blob([bytes], { type: mimeType })
+      const value = await fn()
+      return { value }
     } catch (err) {
-      return json({ error: `写真データのデコードに失敗しました: ${err.message}` }, 400)
-    }
-
-    const prompt =
-      `Add the following yokai (Japanese folklore creature) naturally into this photo, ` +
-      `matching the background, lighting, perspective and scale so it looks like it is really ` +
-      `standing/floating there. Keep everything else in the photo (people, background, objects) ` +
-      `unchanged. Yokai name: ${yokaiName}. Appearance: ${appearance}. ` +
-      `This is for a children's app, so keep the mood friendly and not too scary.`
-
-    // Workers AI側が「Capacity temporarily exceeded」「Request timeout」のような
-    // 一時的なエラーを返すことがあるため、最大2回まで試す。
-    // FormDataのbody(ReadableStream)は一度読まれると再利用できないので、
-    // 試行のたびにFormData一式を作り直す。
-    const MAX_ATTEMPTS = 2
-    let aiResult
-    let lastErr
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-      const form = new FormData()
-      form.append('input_image_0', imageBlob, 'photo')
-      form.append('prompt', prompt)
-      // ステップ数を減らして応答時間を短くする(画質とのトレードオフ)
-      form.append('steps', '15')
-
-      // FormDataをmultipartとして送るには、boundary(区切り文字)を含む正しい
-      // Content-Typeが必要。この文字列は自分では組み立てられないので、
-      // 一度Requestオブジェクトを作らせて、そこで自動生成されたヘッダーと
-      // ボディ(ReadableStream)のペアをそのまま使う。
-      const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
-      const multipartContentType = encodedRequest.headers.get('content-type')
-
-      try {
-        aiResult = await env.AI.run(IMAGE_MODEL, {
-          multipart: { body: encodedRequest.body, contentType: multipartContentType }
-        })
-        lastErr = null
-        break
-      } catch (err) {
-        lastErr = err
-        const msg = err && err.message ? err.message : String(err)
-        console.error(`Workers AI error (試行${attempt}/${MAX_ATTEMPTS})`, msg)
-        if (attempt < MAX_ATTEMPTS) {
-          await new Promise((resolve) => setTimeout(resolve, 1200))
-        }
+      lastErr = err
+      const msg = err && err.message ? err.message : String(err)
+      console.error(`Workers AI error (試行${attempt}/${maxAttempts})`, msg)
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 1200))
       }
     }
-
-    if (lastErr) {
-      const msg = lastErr && lastErr.message ? lastErr.message : String(lastErr)
-      return json({ error: `Workers AIの呼び出しに失敗しました: ${msg}` }, 502)
-    }
-
-    const outBase64 =
-      typeof aiResult === 'string' ? aiResult : aiResult?.image || aiResult?.result?.image
-
-    if (!outBase64) {
-      console.error('Workers AI returned no image', JSON.stringify(aiResult).slice(0, 2000))
-      return json({ error: 'AIが画像を生成しませんでした' }, 502)
-    }
-
-    return json({ imageDataUrl: `data:image/png;base64,${outBase64}` })
   }
+  return { error: lastErr && lastErr.message ? lastErr.message : String(lastErr) }
 }
 
 function json(obj, status = 200) {

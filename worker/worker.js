@@ -93,27 +93,46 @@ export default {
       `unchanged. Yokai name: ${yokaiName}. Appearance: ${appearance}. ` +
       `This is for a children's app, so keep the mood friendly and not too scary.`
 
-    const form = new FormData()
-    form.append('input_image_0', imageBlob, 'photo')
-    form.append('prompt', prompt)
-    // ステップ数を減らして応答時間を短くする(画質とのトレードオフ)
-    form.append('steps', '15')
-
-    // FormDataをmultipartとして送るには、boundary(区切り文字)を含む正しい
-    // Content-Typeが必要。この文字列は自分では組み立てられないので、
-    // 一度Requestオブジェクトを作らせて、そこで自動生成されたヘッダーと
-    // ボディ(ReadableStream)のペアをそのまま使う。
-    const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
-    const multipartContentType = encodedRequest.headers.get('content-type')
-
+    // Workers AI側が「Capacity temporarily exceeded」「Request timeout」のような
+    // 一時的なエラーを返すことがあるため、最大2回まで試す。
+    // FormDataのbody(ReadableStream)は一度読まれると再利用できないので、
+    // 試行のたびにFormData一式を作り直す。
+    const MAX_ATTEMPTS = 2
     let aiResult
-    try {
-      aiResult = await env.AI.run(IMAGE_MODEL, {
-        multipart: { body: encodedRequest.body, contentType: multipartContentType }
-      })
-    } catch (err) {
-      console.error('Workers AI error', err && err.message ? err.message : String(err))
-      return json({ error: `Workers AIの呼び出しに失敗しました: ${err && err.message ? err.message : err}` }, 502)
+    let lastErr
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      const form = new FormData()
+      form.append('input_image_0', imageBlob, 'photo')
+      form.append('prompt', prompt)
+      // ステップ数を減らして応答時間を短くする(画質とのトレードオフ)
+      form.append('steps', '15')
+
+      // FormDataをmultipartとして送るには、boundary(区切り文字)を含む正しい
+      // Content-Typeが必要。この文字列は自分では組み立てられないので、
+      // 一度Requestオブジェクトを作らせて、そこで自動生成されたヘッダーと
+      // ボディ(ReadableStream)のペアをそのまま使う。
+      const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
+      const multipartContentType = encodedRequest.headers.get('content-type')
+
+      try {
+        aiResult = await env.AI.run(IMAGE_MODEL, {
+          multipart: { body: encodedRequest.body, contentType: multipartContentType }
+        })
+        lastErr = null
+        break
+      } catch (err) {
+        lastErr = err
+        const msg = err && err.message ? err.message : String(err)
+        console.error(`Workers AI error (試行${attempt}/${MAX_ATTEMPTS})`, msg)
+        if (attempt < MAX_ATTEMPTS) {
+          await new Promise((resolve) => setTimeout(resolve, 1200))
+        }
+      }
+    }
+
+    if (lastErr) {
+      const msg = lastErr && lastErr.message ? lastErr.message : String(lastErr)
+      return json({ error: `Workers AIの呼び出しに失敗しました: ${msg}` }, 502)
     }
 
     const outBase64 =

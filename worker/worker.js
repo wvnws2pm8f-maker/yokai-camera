@@ -69,19 +69,34 @@ export default {
 }
 
 // --- 1. イラスト生成モード ---
+// body.model / body.steps / body.multipart で挙動を差し替えられるようにしてある。
+// (モデルやパラメータを試行錯誤する際に、Workerを再デプロイしなくて済むようにするため)
 async function handleIllustrate(env, body) {
-  const { prompt } = body || {}
+  const { prompt, model, steps, multipart } = body || {}
   if (!prompt) {
     return json({ error: 'promptが必要です' }, 400)
   }
+  const chosenModel = model || ILLUSTRATION_MODEL
+  const chosenSteps = steps || 6
 
-  const result = await runWithRetry(() => env.AI.run(ILLUSTRATION_MODEL, { prompt, steps: 6 }))
+  const result = await runWithRetry(async () => {
+    if (multipart) {
+      const form = new FormData()
+      form.append('prompt', prompt)
+      form.append('steps', String(chosenSteps))
+      const encodedRequest = new Request('https://dummy.local/', { method: 'POST', body: form })
+      const contentType = encodedRequest.headers.get('content-type')
+      return env.AI.run(chosenModel, { multipart: { body: encodedRequest.body, contentType } })
+    }
+    return env.AI.run(chosenModel, { prompt, steps: chosenSteps })
+  })
+
   if (result.error) {
     return json({ error: `イラスト生成に失敗しました: ${result.error}` }, 502)
   }
 
   const outBase64 =
-    typeof result.value === 'string' ? result.value : result.value?.image
+    typeof result.value === 'string' ? result.value : result.value?.image || result.value?.result?.image
   if (!outBase64) {
     console.error('Workers AI returned no image', JSON.stringify(result.value).slice(0, 2000))
     return json({ error: 'イラストを生成できませんでした' }, 502)

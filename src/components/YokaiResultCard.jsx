@@ -6,7 +6,7 @@ export default function YokaiResultCard({ yokai, prefName, resultImageDataUrl, i
       <img className="result-photo" src={resultImageDataUrl} alt={`${prefName}で撮れた${yokai.name}`} />
       {isMock && (
         <p className="mock-notice">
-          ※ これは仮あわせ画像です。AI合成用のCloudflare Workerを設定すると、本物の妖怪が写真に写りこむようになります。
+          ※ 妖怪のイラスト読み込みに失敗したため、仮あわせ表示になっています。もう一度試してみてください。
         </p>
       )}
       <div className="result-info">

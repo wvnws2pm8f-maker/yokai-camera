@@ -29,9 +29,10 @@ export default defineConfig({
       },
       workbox: {
         // 撮影した写真・図鑑データはIndexedDB側で管理するので、SWは
-        // アプリ本体(JS/CSS/HTML/画像アセット/妖怪マスターデータ)だけをキャッシュすればよい
-        globPatterns: ['**/*.{js,css,html,svg,png,json}'],
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024
+        // アプリ本体(JS/CSS/HTML/画像アセット/妖怪マスターデータ/妖怪イラスト)だけを
+        // キャッシュすればよい。jpgは妖怪の立ち絵イラスト(public/yokai-art/)用
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,json}'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
       }
     })
   ]

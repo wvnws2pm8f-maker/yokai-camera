@@ -23,15 +23,13 @@ jobs:
         with:
           node-version: 20
       - run: npm install
+      # 2026-09-19〜: 妖怪の合成は事前生成イラスト(public/yokai-art/)を
+      # クライアント側で重ねる方式になったため、ビルド時にCloudflare Workerの
+      # URL/合言葉を埋め込む必要は無くなった(Workerはイラスト生成時にだけ使う)。
       - run: npm run build
-        env:
-          # Cloudflare Workers側のURL(AI合成の入り口)。
-          # リポジトリの Settings > Secrets and variables > Actions で
-          # WORKER_URL という名前で登録すると、ここでビルドに埋め込まれる。
-          # 未設定でもビルドは通り、その場合は「仮あわせ」モックで動作する。
-          VITE_WORKER_URL: ${{ secrets.WORKER_URL }}
-          # Worker側の合言葉(APP_SECRET)と同じ値。第三者による無断利用を防ぐ簡易ガード。
-          VITE_APP_SECRET: ${{ secrets.APP_SECRET }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

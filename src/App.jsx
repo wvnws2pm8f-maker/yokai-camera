@@ -55,7 +55,7 @@ export default function App() {
 
   async function huntYokai(dataUrl, prefCode, prefName, lat, lon) {
     setScreen('compositing')
-    setStatusText(`${prefName}の妖怪をさがしています…\n(20〜30秒くらいかかることがあるよ)`)
+    setStatusText(`${prefName}の妖怪をさがしています…`)
     const picked = pickRandomYokai(prefCode)
     if (!picked) {
       setErrorText('この都道府県の妖怪データがまだありません。')

@@ -9,7 +9,8 @@
     "appearance": "つばの広い帽子のすがた。かぶる部分がぽっかり口のように開いていて、つばの両はしがひらひらと手のように動く",
     "description": "公園や電車に置き忘れられた帽子が化けたと言われている。日本中どこにでも現れる。",
     "voice": "日よけ、してあげるよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A wide-brimmed hat character, the crown opening like a mouth with a friendly smile, the two ends of the brim flapping like waving hands"
   },
   {
     "id": "common-crayon-obake",
@@ -21,7 +22,8 @@
     "appearance": "折れて短くなったクレヨンのすがた。色とりどりの体で、先っぽがとがった帽子のようになっている",
     "description": "半分に折れてしまったクレヨンが化けたと言われている。日本中どこにでも現れる。",
     "voice": "まだ塗れるのに、折らないでよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A short broken crayon character, colorful candy-striped body, the pointed tip shaped like a little hat"
   },
   {
     "id": "common-enpitsu-obake",
@@ -33,7 +35,8 @@
     "appearance": "使いこまれて短くなった鉛筆のすがた。芯の部分が目になっていて、木の胴体からひょろっとした手足が生えている",
     "description": "さいごまで大事に使ってもらえなかった鉛筆が、化けて出てきたと言われている。日本中どこにでも現れる。",
     "voice": "けずってくれよ〜…まだ書けるのに〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A short well-used wooden pencil character, the sharpened graphite tip forming a small face with one eye, thin stick-like arms and legs"
   },
   {
     "id": "common-haburashi-obake",
@@ -45,7 +48,8 @@
     "appearance": "毛先が広がってボサボサになった歯ブラシのすがた。ブラシの部分が髪の毛のように四方八方に広がっている",
     "description": "長い間交換してもらえなかった歯ブラシが化けたと言われている。日本中どこにでも現れる。",
     "voice": "そろそろ新しいのに変えてくれよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A worn-out toothbrush character, the frayed bristles sticking out wildly like messy spiky hair"
   },
   {
     "id": "common-isu-obake",
@@ -57,7 +61,8 @@
     "appearance": "木でできたいすのすがた。座る部分がぱかっと口のように開き、四本の脚がひょこひょこと歩く",
     "description": "ずっと同じ場所に置かれたままだったいすが、動きたくなって化けたと言われている。日本中どこにでも現れる。",
     "voice": "たまには座ってくれよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A small wooden chair character, the seat opening like a mouth, four wooden legs walking"
   },
   {
     "id": "common-ittanmomen",
@@ -69,7 +74,8 @@
     "appearance": "一枚の細長い白い布のすがた。ひらひらと空を飛び、人に近づくと顔にふわりと巻きついてくることがある",
     "description": "夜空をひらひらと飛ぶ白い布の妖怪。「ゲゲゲの鬼太郎」では鬼太郎の仲間として、空を飛ぶ乗り物のような役でも有名。",
     "voice": "ふわふわ〜、乗ってきなよ〜",
-    "origin": "鹿児島県が発祥と言われる伝承(全国どこでも出現)"
+    "origin": "鹿児島県が発祥と言われる伝承(全国どこでも出現)",
+    "illustrationPrompt": "A long rectangular white cloth character flying through the sky like a flag, gently wavy, with a tiny friendly face on one end"
   },
   {
     "id": "common-kagi-obake",
@@ -81,7 +87,8 @@
     "appearance": "大きな一本のかぎのすがた。かぎ穴に入れる部分がくるんと丸まって、そこから小さな目がのぞいている",
     "description": "どこにしまったか忘れられてしまった鍵が化けたと言われている。日本中どこにでも現れる。",
     "voice": "どこの鍵か、わかるかな〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A large old brass key character, the round bow of the key curled with a small eye peeking out of it"
   },
   {
     "id": "common-kasa-obake",
@@ -93,7 +100,8 @@
     "appearance": "骨組みが少し曲がった、開いた傘のすがた。持ち手や手・腕は無く、傘の下から一本足だけが生えていて、その足でぴょんぴょん跳ねて歩く。傘の生地の真ん中あたりに大きな目が一つある",
     "description": "電車や学校に忘れられたままの傘が化けたと言われている。日本中どこにでも現れる。",
     "voice": "わすれないでよ〜、また忘れてくのかい〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "An open Japanese paper umbrella character with a slightly bent frame, no handle and no arms, a single round leg under the umbrella hopping, one big round eye in the center of the umbrella fabric"
   },
   {
     "id": "common-konaki-jiji",
@@ -105,7 +113,8 @@
     "appearance": "しわだらけの小さなおじいさんのすがた。見た目は赤ちゃんくらい小さいが、抱き上げると石のようにずっしりと重くなる",
     "description": "赤ちゃんのような泣き声をまねて人に近づき、抱っこされると急に重くなるという妖怪。「ゲゲゲの鬼太郎」にも登場する、有名な妖怪のひとり。",
     "voice": "オギャア…オギャア…だっこして〜",
-    "origin": "徳島県山間部が発祥と言われる伝承(全国どこでも出現)"
+    "origin": "徳島県山間部が発祥と言われる伝承(全国どこでも出現)",
+    "illustrationPrompt": "A tiny wrinkled old man character, small and round like a baby, sitting"
   },
   {
     "id": "common-kutsushita-obake",
@@ -117,7 +126,8 @@
     "appearance": "片方だけになった靴下のすがた。つま先の部分がにょきっと伸びて手になり、ふにゃふにゃと歩く",
     "description": "洗たくのときに片方だけ行方不明になった靴下が化けたと言われている。日本中どこにでも現れる。",
     "voice": "もう片方、どこいったかな〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A single sock character, the toe end stretching out into a small hand, floppy fabric body"
   },
   {
     "id": "common-makuragaeshi",
@@ -129,7 +139,8 @@
     "appearance": "布団の中からひょっこり顔を出す、小さな子どものようなすがたの妖怪。眠っている人の枕をくるっとひっくり返してしまう",
     "description": "眠っている間に枕の向きを変えてしまうと言われる妖怪。目が覚めると体の向きが変わっていることがあるという。「ゲゲゲの鬼太郎」にもたびたび登場する。",
     "voice": "くるくる〜、まくらをひっくりかえすぞ〜",
-    "origin": "日本各地に伝わる「枕返し」の伝承"
+    "origin": "日本各地に伝わる「枕返し」の伝承",
+    "illustrationPrompt": "A small child-like ghost character peeking out from under a folded futon blanket, tiny hands flipping a pillow"
   },
   {
     "id": "common-megane-obake",
@@ -141,7 +152,8 @@
     "appearance": "大きなめがねのすがた。レンズの中に目玉があり、つるの部分がぴょこぴょこと足のように動く",
     "description": "なくしたと思ったら頭の上にのっていた、というメガネが化けたと言われている。日本中どこにでも現れる。",
     "voice": "よく見えるように、貸してあげようか〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A pair of large round eyeglasses character, one eyeball inside each lens, the temple arms bent like little legs"
   },
   {
     "id": "common-mezamashi-obake",
@@ -153,7 +165,8 @@
     "appearance": "丸い時計の顔をしていて、時計の針が手足のように伸びている。上についたベルの部分が耳のようにピョコンと立っている",
     "description": "朝、なかなか止めてもらえなかった目覚まし時計が化けたと言われている。日本中どこにでも現れる。",
     "voice": "おきろー、おきろー、いつまで寝てるんだー",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A round twin-bell alarm clock character, the clock hands stretched out as arms, thin legs, the two bells on top like ears"
   },
   {
     "id": "common-nuigurumi-obake",
@@ -165,7 +178,8 @@
     "appearance": "綿がところどころ飛び出した、くたびれたぬいぐるみのすがた。片方のボタンの目が取れかけている",
     "description": "遊んでもらえなくなって押し入れにしまわれたぬいぐるみが化けたと言われている。日本中どこにでも現れる。",
     "voice": "ぎゅっと、だっこしてくれよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A worn stuffed teddy bear character, tufts of white stuffing poking out from the seams, one button eye hanging loose"
   },
   {
     "id": "common-nurikabe",
@@ -177,7 +191,8 @@
     "appearance": "夜道に突然現れる、大きな灰色の壁のすがた。よく見ると壁の上のほうに小さな目と、下のほうに短い手足がついている",
     "description": "夜道を歩いていると、急に行く手をふさぐ見えない壁として現れるという妖怪。「ゲゲゲの鬼太郎」にも登場し、頑丈な体が有名。",
     "voice": "ここから先には行かせないぞ〜",
-    "origin": "福岡県が発祥と言われる伝承(全国どこでも出現)"
+    "origin": "福岡県が発祥と言われる伝承(全国どこでも出現)",
+    "illustrationPrompt": "A tall flat gray wall character standing on a dark road at night, two tiny eyes near the top and short stubby legs at the bottom"
   },
   {
     "id": "common-reizouko-obake",
@@ -189,7 +204,8 @@
     "appearance": "大きくて四角い冷蔵庫のすがた。扉がぱかっと開くと中から冷たい息を「はぁ〜」と吐き、取っ手が手のように動く",
     "description": "中に何が入っているかすっかり忘れられてしまった冷蔵庫が化けたと言われている。日本中どこにでも現れる。",
     "voice": "うっかり閉め忘れてないかい〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A big square refrigerator character, the door open like a mouth breathing out cold blue mist, the door handle bent like an arm"
   },
   {
     "id": "common-sekken-obake",
@@ -201,7 +217,8 @@
     "appearance": "手ににぎられて薄く小さくなった石けんのすがた。つるつるすべる体で、あわを踏んづけながら歩く",
     "description": "最後の最後まで小さくなった石けんが化けたと言われている。日本中どこにでも現れる。",
     "voice": "つるつるっと逃げちゃうぞ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A thin worn oval bar of soap character, smooth glossy body, standing on a small pile of bubbles"
   },
   {
     "id": "common-shishimai",
@@ -213,7 +230,8 @@
     "appearance": "赤と金色の大きな獅子の頭をかぶり、長い布の体をひらひらさせながら舞う。カチカチと歯を鳴らして頭をふる",
     "description": "お正月などに家々を回り、頭をかんでもらうと一年の厄除けになると言われる伝統芸能。日本各地で受け継がれている。",
     "voice": "カチカチカチ…(歯を鳴らす音)",
-    "origin": "日本各地の正月行事の伝統芸能"
+    "origin": "日本各地の正月行事の伝統芸能",
+    "illustrationPrompt": "A traditional Japanese lion dance shishimai head, red and gold lacquered mask with bushy eyebrows, long flowing green fabric body trailing behind, jaw open mid-clack"
   },
   {
     "id": "common-spoon-obake",
@@ -225,7 +243,8 @@
     "appearance": "銀色に光るスプーンのすがた。すくう部分が顔になっていて、にっこり笑うと自分の姿がゆがんで映る",
     "description": "引き出しの奥で忘れられていたスプーンが化けたと言われている。日本中どこにでも現れる。",
     "voice": "いっしょにごはん、たべようよ〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A shiny silver spoon character standing upright, the round scoop shaped like a smiling face with two eyes"
   },
   {
     "id": "common-sunakake-baba",
@@ -237,7 +256,8 @@
     "appearance": "神社の木のかげにひそむ、白髪頭の小さなおばあさんのすがた。姿はめったに見せず、気配だけを感じさせる",
     "description": "人が通りかかると、姿を見せずにサラサラと砂を振りかけて驚かせるという妖怪。「ゲゲゲの鬼太郎」にも仲間として登場する。",
     "voice": "サラサラ…おどろいたかい〜",
-    "origin": "奈良県の神社などに伝わる伝承(全国どこでも出現)"
+    "origin": "奈良県の神社などに伝わる伝承(全国どこでも出現)",
+    "illustrationPrompt": "A small elderly woman character with wild white hair, peeking out from behind a shrine tree in shadow, mischievous grin"
   },
   {
     "id": "common-tebukuro-obake",
@@ -249,7 +269,8 @@
     "appearance": "片方だけになった手袋のすがた。指の部分がにょろにょろと五本の触手のように動く",
     "description": "冬に片方だけ落としてしまった手袋が化けたと言われている。日本中どこにでも現れる。",
     "voice": "もう片方、知らないかい〜",
-    "origin": "オリジナル妖怪(全国共通)"
+    "origin": "オリジナル妖怪(全国共通)",
+    "illustrationPrompt": "A single knitted mitten character, five finger tips wiggling like little tentacles, soft fabric texture"
   },
   {
     "id": "iwate-gotouchi-wanko",
@@ -261,7 +282,8 @@
     "appearance": "そばの入ったお椀を体にした丸いすがた。頭からそばの麺がひょっこり飛び出していて、元気に走り回る",
     "description": "岩手県の名物「わんこそば」がモチーフのオリジナルご当地キャラ。お椀を何杯もおかわりするのが大好き。",
     "voice": "どんどん、おかわりだよ〜",
-    "origin": "オリジナルご当地キャラ(わんこそばがモチーフ)"
+    "origin": "オリジナルご当地キャラ(わんこそばがモチーフ)",
+    "illustrationPrompt": "A round chubby mascot character shaped like a soba noodle bowl, curly noodles popping out of the top like hair, tiny arms and legs, cheerful running pose"
   },
   {
     "id": "iwate-kappa",
@@ -273,7 +295,8 @@
     "appearance": "頭のてっぺんにお皿があり、背中にこうらを背負った緑色のすがた。手足に水かきがあり、口はくちばしのように少しとがっている",
     "description": "遠野の「カッパ淵」という小川に住むと伝えられる河童。いたずら好きだが、キュウリが大好物と言われている。",
     "voice": "きゅうり、わけてくれよ〜",
-    "origin": "岩手県遠野市・カッパ淵の伝承"
+    "origin": "岩手県遠野市・カッパ淵の伝承",
+    "illustrationPrompt": "A cheerful green kappa, a Japanese water sprite with a dish-shaped indentation on its head, a turtle-like shell on its back, webbed hands and feet, a slightly beak-like mouth"
   },
   {
     "id": "iwate-shishi-odori",
@@ -285,7 +308,8 @@
     "appearance": "鹿の頭をかたどった大きなお面をかぶり、背中に長いササラ(竹でできた飾り)を差した踊り手のすがた。太鼓を打ちながら勇壮に舞う",
     "description": "岩手県に伝わる伝統芸能。鹿の頭のお面をつけた踊り手が、太鼓のリズムに合わせて力強く踊る。豊作や魔除けを願って昔から伝えられてきた。",
     "voice": "ドン、ドン、ドン…(太鼓の音に合わせて舞う)",
-    "origin": "岩手県の民俗芸能「鹿踊り」"
+    "origin": "岩手県の民俗芸能「鹿踊り」",
+    "illustrationPrompt": "A Japanese deer dance shishi-odori performer, wearing a large wooden deer-head mask with tall branching antlers, tall bamboo sasara decorations fanning out from the back, mid-dance pose"
   },
   {
     "id": "iwate-yamaotoko",
@@ -297,7 +321,8 @@
     "appearance": "人間よりずっと背が高く、もじゃもじゃの髪とひげをたくわえた大男。みのや毛皮のようなものを身にまとい、山の中を音もなく歩く",
     "description": "岩手県遠野の山奥に住むと伝えられる大男。里に下りてきて、まき割りなどを手伝ってくれることもあるという。",
     "voice": "ここは俺の山だ…けど、悪さはしねぇよ",
-    "origin": "岩手県遠野地方の伝承(遠野物語)"
+    "origin": "岩手県遠野地方の伝承(遠野物語)",
+    "illustrationPrompt": "A very tall hairy mountain man character, shaggy wild hair and a bushy beard covering most of the face, wearing rough straw and fur clothing, calm expression"
   },
   {
     "id": "iwate-zashiki-warashi",
@@ -309,7 +334,8 @@
     "appearance": "おかっぱ頭の小さな子どものすがた。赤い着物を着ていることが多く、古い家の座敷にちょこんと座っていたり、廊下を走りぬけたりする",
     "description": "岩手県遠野地方に伝わる、家に住みつく子どもの姿の神さま。座敷わらしがいる家は栄えると言われている。",
     "voice": "ねえ、いっしょにあそぼう",
-    "origin": "岩手県遠野地方の伝承(遠野物語)"
+    "origin": "岩手県遠野地方の伝承(遠野物語)",
+    "illustrationPrompt": "A small child ghost character with a bobbed okappa haircut, wearing a red kimono, sitting cross-legged with a playful smile"
   },
   {
     "id": "tokyo-gotouchi-iruka",
@@ -321,7 +347,8 @@
     "appearance": "まるっこいイルカの体に、麦わら帽子をちょこんとかぶった愛きょうのあるすがた。ヒレが手のように動く",
     "description": "御蔵島の海に住む野生のイルカたちがモチーフの、東京都のオリジナルご当地キャラ。人なつっこい性格で、泳ぐのが得意。",
     "voice": "キュイキュイ〜、いっしょに泳ごうよ〜",
-    "origin": "オリジナルご当地キャラ(御蔵島のイルカがモチーフ)"
+    "origin": "オリジナルご当地キャラ(御蔵島のイルカがモチーフ)",
+    "illustrationPrompt": "A round chubby dolphin mascot character wearing a tiny straw hat, flippers positioned like little waving hands, big friendly eyes"
   },
   {
     "id": "tokyo-hitotsume-kozo",
@@ -333,7 +360,8 @@
     "appearance": "顔の真ん中に大きな目が一つだけある、着物姿の小さな子どものすがた。ちょこちょこと身軽に歩く",
     "description": "むかしの江戸のまちに伝わる妖怪。決まった日の夜にふらっと家々をたずねてくると言われている、いたずら好きな妖怪。",
     "voice": "こんばんは〜、ちょっとのぞかせておくれ",
-    "origin": "江戸(東京)に伝わる事八日(ことようか)の伝承"
+    "origin": "江戸(東京)に伝わる事八日(ことようか)の伝承",
+    "illustrationPrompt": "A small child ghost character wearing a kimono, with one single large round eye in the middle of the face, short spiky hair"
   },
   {
     "id": "tokyo-oitekebori",
@@ -345,7 +373,8 @@
     "appearance": "水面からぬっと出た大きな影と、光る二つの目。姿ははっきり見えず、水の中に溶けこんでいる",
     "description": "むかし本所(今の墨田区)の堀で釣りをして帰ろうとすると「置いてけ〜、置いてけ〜」と声がしたという、本所七不思議のひとつ。",
     "voice": "おいてけ〜…おいてけ〜…",
-    "origin": "本所七不思議(墨田区)"
+    "origin": "本所七不思議(墨田区)",
+    "illustrationPrompt": "A mysterious dark blob-like shape emerging from water at night, two glowing round eyes, the lower body dissolving into ripples like water"
   },
   {
     "id": "tokyo-tengu-takao",
@@ -357,6 +386,7 @@
     "appearance": "顔も鼻も真っ赤で、鼻がとても長い。山伏のような白い装束をまとい、背中に大きな羽を持つ。手には葉のうちわ(羽団扇)を持っている",
     "description": "八王子の高尾山に伝わる天狗。高尾山薬王院では今も天狗さまとしてまつられている、山を守る不思議な力を持つ存在。",
     "voice": "ふぉっふぉっふぉ、山を大事にする子には力を貸そう",
-    "origin": "八王子・高尾山薬王院の天狗信仰"
+    "origin": "八王子・高尾山薬王院の天狗信仰",
+    "illustrationPrompt": "A Japanese tengu character with a bright red face and a very long pointed nose, wearing white yamabushi mountain-priest robes, large feathered wings on the back, holding a round leaf fan"
   }
 ]

@@ -33,12 +33,17 @@ mkdirSync(outDir, { recursive: true })
 const yokaiList = JSON.parse(readFileSync(yokaiMasterPath, 'utf-8'))
 
 function buildPrompt(yokai) {
+  // 【重要】appearanceは日本語(参考用)。FLUXは英語の説明でないと理解度が
+  // 大きく落ち、指示を無視した汎用の「かわいい怪物」になりがちなので、
+  // 必ず英語で書いた illustrationPrompt を使うこと。
+  // 説明を先頭に置き(短い指示ほど重視されやすいモデルのため)、スタイル指定は後ろに。
+  if (!yokai.illustrationPrompt) {
+    throw new Error(`${yokai.id}: illustrationPrompt(英語)が未設定です。日本語のappearanceは使えません`)
+  }
   return (
-    `Cute, friendly Japanese yokai character illustration for a children's app. ` +
-    `${yokai.appearance} ` +
-    `Full-body character centered on a plain solid magenta background (#FF00FF), ` +
-    `simple flat cartoon illustration style, vivid colors, clean outlines, no shadow, ` +
-    `no scenery, not scary, appealing to young children.`
+    `${yokai.illustrationPrompt}, full body, kawaii mascot style, ` +
+    `plain solid magenta background, flat cartoon illustration, thick clean black outlines, ` +
+    `vivid colors, no text, no letters, no words, no writing, no logo, no watermark, no signature`
   )
 }
 
@@ -47,7 +52,7 @@ async function generateOne(yokai) {
   const res = await fetch(WORKER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-App-Secret': APP_SECRET },
-    body: JSON.stringify({ action: 'illustrate', prompt })
+    body: JSON.stringify({ action: 'illustrate', prompt, steps: 8 })
   })
   if (!res.ok) {
     const text = await res.text()

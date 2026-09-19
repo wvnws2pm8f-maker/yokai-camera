@@ -65,6 +65,7 @@ const records = files.map((f) => {
   }
   if (raw.voice) out.voice = raw.voice
   if (raw.origin) out.origin = raw.origin
+  if (raw.illustrationPrompt) out.illustrationPrompt = raw.illustrationPrompt
   return out
 })
 

@@ -42,8 +42,11 @@ function buildPrompt(yokai) {
   }
   return (
     `${yokai.illustrationPrompt}, full body, kawaii mascot style, ` +
-    `plain solid magenta background, flat cartoon illustration, thick clean black outlines, ` +
-    `vivid colors, no text, no letters, no words, no writing, no logo, no watermark, no signature`
+    `isolated character floating alone on a completely plain solid magenta background ` +
+    `with absolutely nothing else in the frame (no tree, no wall, no road, no water, no ground, ` +
+    `no props, no scenery, no background objects of any kind), ` +
+    `flat cartoon illustration, thick clean black outlines, vivid colors, ` +
+    `no text, no letters, no words, no writing, no logo, no watermark, no signature`
   )
 }
 

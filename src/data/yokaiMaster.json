@@ -192,7 +192,7 @@
     "description": "夜道を歩いていると、急に行く手をふさぐ見えない壁として現れるという妖怪。「ゲゲゲの鬼太郎」にも登場し、頑丈な体が有名。",
     "voice": "ここから先には行かせないぞ〜",
     "origin": "福岡県が発祥と言われる伝承(全国どこでも出現)",
-    "illustrationPrompt": "A tall flat gray wall character standing on a dark road at night, two tiny eyes near the top and short stubby legs at the bottom"
+    "illustrationPrompt": "A tall flat gray stone wall character standing upright by itself, two tiny round worried eyes near the top and two short stubby legs at the bottom"
   },
   {
     "id": "common-reizouko-obake",
@@ -257,7 +257,7 @@
     "description": "人が通りかかると、姿を見せずにサラサラと砂を振りかけて驚かせるという妖怪。「ゲゲゲの鬼太郎」にも仲間として登場する。",
     "voice": "サラサラ…おどろいたかい〜",
     "origin": "奈良県の神社などに伝わる伝承(全国どこでも出現)",
-    "illustrationPrompt": "A small elderly woman character with wild white hair, peeking out from behind a shrine tree in shadow, mischievous grin"
+    "illustrationPrompt": "A small elderly woman character by herself with wild spiky white hair, mischievous grin, rosy cheeks, wearing a dark brown kimono"
   },
   {
     "id": "common-tebukuro-obake",
@@ -374,7 +374,7 @@
     "description": "むかし本所(今の墨田区)の堀で釣りをして帰ろうとすると「置いてけ〜、置いてけ〜」と声がしたという、本所七不思議のひとつ。",
     "voice": "おいてけ〜…おいてけ〜…",
     "origin": "本所七不思議(墨田区)",
-    "illustrationPrompt": "A mysterious dark blob-like shape emerging from water at night, two glowing round eyes, the lower body dissolving into ripples like water"
+    "illustrationPrompt": "A mysterious dark rounded blob-shaped ghost character by itself, smooth glossy dark navy body, two glowing round pale eyes, no mouth, no limbs"
   },
   {
     "id": "tokyo-tengu-takao",
